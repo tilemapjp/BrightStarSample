@@ -1,13 +1,26 @@
 ﻿using System;
 
 using Xamarin.Forms;
-using Akavache;
 using System.Reactive.Linq;
 
-namespace AkavacheSample
+namespace BrightStarSample
 {
     public class App : Application
     {
+        static PersonDataBase database;
+
+        public static PersonDataBase Database
+        {
+            get
+            {
+                if ( database == null )
+                {
+                    database = new PersonDataBase();
+                }
+                return database;
+            }
+        }
+
         public App()
         {
             var nameEntry  = new Entry { Placeholder = "名前を入力" };
@@ -15,25 +28,31 @@ namespace AkavacheSample
             var saveButton = new Button { Text = "保存" };
             var loadButton = new Button { Text = "読み出し" };
 
-            saveButton.Clicked += async (sender, e) => 
+            saveButton.Clicked += (sender, e) => 
             {
                 // Person に詰めて…
-                var person = new Person { 
-                    PersonName = nameEntry.Text, 
-                    PersonAge  = Convert.ToInt16(ageEntry.Text) 
-                };
+
+                var person = new Person();
+                person.PersonName = nameEntry.Text;
+                person.PersonAge  = Convert.ToInt16(ageEntry.Text);
 
                 // 保存
-                await BlobCache.LocalMachine.InsertObject("person", person); 
+                App.Database.SaveItem(person);
             };
 
-            loadButton.Clicked += async (sender, e) => 
+            loadButton.Clicked += (sender, e) => 
             {
-                // Akavache で Person を読み出し
-                var loaded = await BlobCache.LocalMachine.GetObject<Person>("person");
-                // 各テキストボックスに設定
-                nameEntry.Text = loaded.PersonName;
-                ageEntry.Text  = loaded.PersonAge.ToString();
+                // Person を読み出し
+                var loaded = Database.GetItems().GetEnumerator();
+                loaded.MoveNext();
+                var item = loaded.Current;
+                if (item == null) {
+                    nameEntry.Text = "";
+                    ageEntry.Text = "";
+                } else {
+                    nameEntry.Text = item.PersonName;
+                    ageEntry.Text = item.PersonAge.ToString();
+                }
             };
                 
             // The root page of your application

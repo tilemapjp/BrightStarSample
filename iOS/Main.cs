@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace AkavacheSample.iOS
+namespace BrightStarSample.iOS
 {
     public class Application
     {
