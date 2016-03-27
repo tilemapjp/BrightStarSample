@@ -30,28 +30,22 @@ namespace BrightStarSample
 
             saveButton.Clicked += (sender, e) => 
             {
-                // Person に詰めて…
-
                 var person = new Person();
-                person.PersonName = nameEntry.Text;
-                person.PersonAge  = Convert.ToInt16(ageEntry.Text);
+                person.Name = nameEntry.Text;
+                person.Age  = Convert.ToInt16(ageEntry.Text);
 
-                // 保存
                 App.Database.SaveItem(person);
             };
 
             loadButton.Clicked += (sender, e) => 
             {
-                // Person を読み出し
-                var loaded = Database.GetItems().GetEnumerator();
-                loaded.MoveNext();
-                var item = loaded.Current;
-                if (item == null) {
+                var name = nameEntry.Text;
+                var loaded = Database.GetItem(name);
+                if (loaded == null) {
                     nameEntry.Text = "";
                     ageEntry.Text = "";
                 } else {
-                    nameEntry.Text = item.PersonName;
-                    ageEntry.Text = item.PersonAge.ToString();
+                    ageEntry.Text = loaded.Age.ToString();
                 }
             };
                 

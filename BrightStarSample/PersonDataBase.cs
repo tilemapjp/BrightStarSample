@@ -23,24 +23,27 @@ namespace BrightStarSample
             return _context.Persons.ToList();
         }
 
-        public IPerson GetItem(string id)
+        public IPerson GetItem(string name)
         {
-            return _context.Persons.FirstOrDefault(x => x.ID.Equals(id));
+            if (name == null) return null;
+            return _context.Persons.FirstOrDefault(x => x.Name.Equals(name));
         }
 
         public string SaveItem (Person item)
         {
-            if (item.ID == null)
-            {
+            var exists = this.GetItem(item.Name);
+            if (exists == null) {
                 _context.Persons.Add(item);
+            } else {
+                exists.Age = item.Age;
             }
             _context.SaveChanges();
-            return item.ID;
+            return item.Name;
         }
 
-        public int DeleteItem(string id)
+        public int DeleteItem(string name)
         {
-            var toDelete = _context.Persons.FirstOrDefault(x => x.ID.Equals(id));
+            var toDelete = _context.Persons.FirstOrDefault(x => x.Name.Equals(name));
             if (toDelete == null) return 0;
             _context.DeleteObject(toDelete);
             _context.SaveChanges();

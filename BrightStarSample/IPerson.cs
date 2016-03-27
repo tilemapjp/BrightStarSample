@@ -11,8 +11,8 @@ namespace BrightStarSample
     public interface IPerson
     {
         [Identifier]
-        string ID { get; }
-        int    PersonAge { get; set; }
-        string PersonName { get; set; }
+        string ID   { get; }
+        string Name { get; set; }
+        int    Age  { get; set; }
     }
 }
